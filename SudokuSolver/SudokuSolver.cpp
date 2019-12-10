@@ -51,8 +51,9 @@ bool checkFits(int number, int row, int col, int board[9][9]) {
 }
 
 void printBoard(int board[9][9]) {
-    printf("------------\n");
+    printf("-------------\n");
     for (int i = 0; i < 9; i++) {
+        printf("|");
         for (int j = 0; j < 9; j++) {
             printf("%d", board[i][j]);
             if (((j+1) % 3) == 0) {
@@ -61,21 +62,81 @@ void printBoard(int board[9][9]) {
         }
         printf("\n");
         if (((i+1) % 3) == 0) {
-            printf("------------\n");
+            printf("-------------\n");
         }
-        //printf("\n---------------------------\n");
-        //printf("|\n");
     }
 }
+
+bool findEmptyBox(int& row, int& col, int board[9][9]) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (board[i][j] == 0) {
+                row = i;
+                col = j;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool SolveSudoku(int board[9][9])
+{
+    int row, col;
+
+    if (!findEmptyBox(row, col, board)) {
+        return true;
+    }
+
+    for (int num = 1; num <= 9; num++)
+    {
+        if (checkFits(num, row, col, board))
+        {
+            board[row][col] = num;
+
+            if (SolveSudoku(board)) {
+                return true;
+            }
+
+            board[row][col] = 0;
+        }
+        //printBoard(board);
+    }
+    return false;
+}
+
 int main(){
-    int board[9][9] = { {3, 0, 6, 5, 0, 8, 4, 0, 0},
-                      {5, 2, 0, 0, 0, 0, 0, 0, 0},
-                      {0, 8, 7, 0, 0, 0, 0, 3, 1},
-                      {0, 0, 3, 0, 1, 0, 0, 8, 0},
-                      {9, 0, 0, 8, 6, 3, 0, 0, 5},
-                      {0, 5, 0, 0, 9, 0, 6, 0, 0},
-                      {1, 3, 0, 0, 0, 0, 2, 5, 0},
-                      {0, 0, 0, 0, 0, 0, 0, 7, 4},
-                      {0, 0, 5, 2, 0, 6, 3, 0, 0} };
+  
+    //normal puzzle
+    int board[9][9] =   { {5, 3, 0, 0, 7, 0, 0, 0, 0},
+                          {6, 0, 0, 1, 9, 5, 0, 0, 0},
+                          {0, 9, 8, 0, 0, 0, 0, 6, 0},
+                          {8, 0, 0, 0, 6, 0, 0, 0, 3},
+                          {4, 0, 0, 8, 0, 3, 0, 0, 1},
+                          {7, 0, 0, 0, 2, 0, 0, 0, 6},
+                          {0, 6, 0, 0, 0, 0, 2, 8, 0},
+                          {0, 0, 0, 4, 1, 9, 0, 0, 5},
+                          {0, 0, 0, 0, 8, 0, 0, 7, 9} };
+  
+    /*
+    //worlds hardest sudoku, too hard...
+    int board[9][9] = { {8, 0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 3, 6, 0, 0, 0, 0, 0},
+                        {0, 7, 0, 0, 9, 0, 2, 0, 0},
+                        {0, 5, 0, 0, 0, 7, 0, 0, 0},
+                        {0, 0, 0, 0, 4, 5, 7, 0, 0},
+                        {0, 0, 1, 0, 0, 0, 0, 6, 8},
+                        {0, 0, 1, 0, 0, 0, 0, 6, 8},
+                        {0, 0, 8, 5, 0, 0, 0, 1, 0},
+                        {0, 9, 0, 0, 0, 0, 4, 0, 0} };
+    */
     printBoard(board);
+    if (SolveSudoku(board)) {
+        printf("\n");
+        printBoard(board);
+    }
+    else {
+        printf("Could not find a solution\n");
+    }
+
 }
